@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+env/
+.env
+
+# Sensitive files
+config.ini
+token
+*.openssh
+*.pem
+*.key
+keepalive.pid
+keepalive.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

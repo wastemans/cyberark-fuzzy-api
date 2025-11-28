@@ -1,0 +1,72 @@
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mindex 699d88a..e6b441b 100644[m
+[1m--- a/.gitignore[m
+[1m+++ b/.gitignore[m
+[36m@@ -1,52 +1,26 @@[m
+[31m-# Sensitive files - DO NOT COMMIT[m
+[32m+[m[32m# Python[m
+[32m+[m[32m__pycache__/[m
+[32m+[m[32m*.py[cod][m
+[32m+[m[32m*.pyo[m
+[32m+[m[32m*.pyd[m
+[32m+[m[32m.Python[m
+[32m+[m[32mvenv/[m
+[32m+[m[32m.venv/[m
+[32m+[m[32menv/[m
+[32m+[m[32m.env[m
+[32m+[m
+[32m+[m[32m# Sensitive files[m
+ config.ini[m
+ token[m
+[31m-key.openssh[m
+[32m+[m[32m*.openssh[m
+ *.pem[m
+ *.key[m
+ [m
+ # Logs[m
+ *.log[m
+[31m-keepalive.log[m
+[31m-[m
+[31m-# Python[m
+[31m-__pycache__/[m
+[31m-*.py[cod][m
+[31m-*$py.class[m
+[31m-*.so[m
+[31m-.Python[m
+[31m-build/[m
+[31m-develop-eggs/[m
+[31m-dist/[m
+[31m-downloads/[m
+[31m-eggs/[m
+[31m-.eggs/[m
+[31m-lib/[m
+[31m-lib64/[m
+[31m-parts/[m
+[31m-sdist/[m
+[31m-var/[m
+[31m-wheels/[m
+[31m-*.egg-info/[m
+[31m-.installed.cfg[m
+[31m-*.egg[m
+[31m-[m
+[31m-# Virtual environments[m
+[31m-venv/[m
+[31m-ENV/[m
+[31m-env/[m
+[31m-.venv[m
+ [m
+ # IDE[m
+[31m-.vscode/[m
+ .idea/[m
+[32m+[m[32m.vscode/[m
+ *.swp[m
+ *.swo[m
+[31m-*~[m
+[31m-.DS_Store[m
+[31m-[m
+[31m-# Credentials[m
+[31m-.env[m
+[31m-.env.local[m
+[31m-credentials.json[m
+[31m-[m
