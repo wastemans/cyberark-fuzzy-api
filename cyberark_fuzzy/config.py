@@ -40,8 +40,10 @@ class Config:
     
     @property
     def config_dir(self) -> Path:
-        """Get the config directory path (project root)."""
-        return Path(__file__).parent.parent
+        """Get the config directory path (project root, where main.py lives)."""
+        # Use resolve() to get absolute path - works on Windows and Linux
+        # regardless of current working directory
+        return Path(__file__).resolve().parent.parent
     
     @property
     def token_path(self) -> Path:
@@ -72,13 +74,16 @@ def _find_config_file() -> Optional[Path]:
     
     Priority:
     1. ./config.ini (current directory)
-    2. <project>/config.ini
+    2. <project>/config.ini (where main.py lives)
     3. <project>/config.ini.example (fallback)
     """
+    # Project root is where main.py lives (parent of cyberark_fuzzy package)
+    project_root = Path(__file__).resolve().parent.parent
+    
     candidates = [
-        Path("config.ini"),
-        Path(__file__).parent.parent / "config.ini",
-        Path(__file__).parent.parent / "config.ini.example",
+        Path("config.ini"),  # CWD - for convenience when running from project dir
+        project_root / "config.ini",
+        project_root / "config.ini.example",
     ]
     
     for path in candidates:
