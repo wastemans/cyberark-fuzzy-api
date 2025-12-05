@@ -1,6 +1,8 @@
 # CyberArk Fuzzy API Configuration
 # Copy this file to config.ini and edit as needed
-# Or place in ~/.cybr/config.ini for user-specific settings
+#
+# Note: Relative paths in this file are resolved from the project root
+# (the directory containing main.py), NOT from the current working directory.
 
 [cyberark]
 # CyberArk endpoint hostname (without https://)
@@ -16,7 +18,8 @@ verify_ssl = false
 
 [ssh]
 # Path to store the MFA caching SSH key
-# Defaults to ~/.cybr/key.openssh if not specified
+# Relative paths are resolved from the project root (where main.py lives)
+# Defaults to <project_root>/key.openssh if not specified
 ssh_key_path = key.openssh
 
 # Maximum age of SSH key before refresh (hours)
