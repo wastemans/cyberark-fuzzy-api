@@ -138,7 +138,11 @@ def load_config(
             if parser.has_option("ssh", "ssh_key_path"):
                 val = parser.get("ssh", "ssh_key_path").strip()
                 if val:
-                    config.ssh_key_path = val
+                    # Resolve relative paths against project root, not CWD
+                    key_path = Path(val)
+                    if not key_path.is_absolute():
+                        key_path = config.config_dir / val
+                    config.ssh_key_path = str(key_path)
             if parser.has_option("ssh", "key_max_age_hours"):
                 config.key_max_age_hours = parser.getint("ssh", "key_max_age_hours")
         
