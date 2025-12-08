@@ -224,6 +224,38 @@ class AuthManager:
     # SSH Key Management
     # -------------------------------------------------------------------------
     
+    def _set_windows_key_permissions(self, key_path: Path) -> None:
+        """
+        Set restrictive permissions on SSH key file for Windows.
+        
+        SSH requires that private key files are only readable by the owner.
+        On Windows, this means removing inherited permissions and granting
+        only the current user full control.
+        """
+        key_path_str = str(key_path)
+        username = os.environ.get("USERNAME", os.environ.get("USER", ""))
+        
+        try:
+            # Remove inherited permissions and clear all existing permissions
+            subprocess.run(
+                ["icacls", key_path_str, "/inheritance:r"],
+                capture_output=True,
+                check=True,
+            )
+            
+            # Grant full control only to the current user
+            subprocess.run(
+                ["icacls", key_path_str, "/grant:r", f"{username}:F"],
+                capture_output=True,
+                check=True,
+            )
+            
+        except subprocess.CalledProcessError as e:
+            console.print(
+                f"[yellow]Warning: Could not set key permissions automatically.[/yellow]\n"
+                f"[yellow]You may need to manually restrict access to: {key_path}[/yellow]"
+            )
+    
     def download_ssh_key(self) -> bool:
         """
         Download MFA caching SSH key if needed.
@@ -256,7 +288,9 @@ class AuthManager:
             
             # Save key with restrictive permissions
             key_path.write_text(private_key)
-            if os.name != "nt":
+            if os.name == "nt":
+                self._set_windows_key_permissions(key_path)
+            else:
                 os.chmod(key_path, 0o600)
             
             console.print(f"[green]SSH key saved to {key_path}[/green]")
