@@ -39,6 +39,9 @@ class AccountAction(Enum):
     BACK = "← Back to search"
 
 
+MAX_DISPLAY_ACCOUNTS = 36  # Limited by questionary shortcuts (0-9, a-z)
+
+
 def select_account(accounts: list[Account]) -> Optional[Account]:
     """
     Interactive fuzzy selection of an account.
@@ -47,6 +50,13 @@ def select_account(accounts: list[Account]) -> Optional[Account]:
     """
     if not accounts:
         console.print("[yellow]No accounts to select from[/yellow]")
+        return None
+    
+    if len(accounts) > MAX_DISPLAY_ACCOUNTS:
+        console.print(
+            f"[yellow]Too many results ({len(accounts)} accounts). "
+            f"Please refine your search (max {MAX_DISPLAY_ACCOUNTS}).[/yellow]"
+        )
         return None
     
     choices = [
