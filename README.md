@@ -146,6 +146,12 @@ python main.py --endpoint cyberark-dr --username MY_ADMIN_USERNAME
 - `rich` - Terminal formatting
 - `keyring` - Cross-platform credential storage (optional)
 
+## PowerShell Alternative
+
+If you prefer PowerShell over Python, there's a native PowerShell implementation available in the [`PowerShell/`](PowerShell/) directory. It provides the same functionality using Windows-native tools like `Out-GridView` and Windows Credential Manager.
+
+See [`PowerShell/README.md`](PowerShell/README.md) for installation and usage instructions.
+
 ## License
 
 Internal use only.
