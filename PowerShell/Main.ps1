@@ -251,14 +251,53 @@ function Handle-Action {
             }
         }
         "Verify" {
-            $AccountMgr.Verify($Account)
+            try {
+                # Unwrap PSObject to actual account instance
+                $accountObj = if ($Account -is [psobject] -and $Account.PSObject.BaseObject) { $Account.PSObject.BaseObject } else { $Account }
+                
+                # Use reflection to avoid optional/overload issues when classes are loaded via Invoke-Expression
+                $verifyMethod = $AccountMgr.GetType().GetMethod("Verify")
+                if ($verifyMethod) {
+                    $verifyMethod.Invoke($AccountMgr, @($accountObj)) | Out-Null
+                } else {
+                    $AccountMgr.Verify($accountObj) | Out-Null
+                }
+            }
+            catch {
+                Write-Host "Verify failed: $($_.Exception.Message)" -ForegroundColor Red
+                if ($_.Exception.InnerException) {
+                    Write-Host "Inner error: $($_.Exception.InnerException.Message)" -ForegroundColor Yellow
+                }
+            }
         }
         "SCPSend" {
             $localPath = Prompt-Path -Message "Local source path:"
             if ($localPath) {
                 $remotePath = Prompt-Path -Message "Remote destination path:" -Default "~/"
                 if ($remotePath) {
-                    $SSHMgr.SCPSend($Account, $localPath, $remotePath)
+                    try {
+                        # Use reflection to bypass optional-parameter resolution when classes are loaded via Invoke-Expression
+                        $scpSendMethod = $SSHMgr.GetType().GetMethod("SCPSend")
+                        
+                        # Unwrap PSObject inputs and ensure strings for paths
+                        $accountObj = if ($Account -is [psobject] -and $Account.PSObject.BaseObject) { $Account.PSObject.BaseObject } else { $Account }
+                        $localStr   = [string]$localPath
+                        $remoteStr  = [string]$remotePath
+                        
+                        if ($scpSendMethod) {
+                            # Explicitly pass all parameters: account, localPath, remotePath, useKey
+                            $scpSendMethod.Invoke($SSHMgr, @($accountObj, $localStr, $remoteStr, $true)) | Out-Null
+                        } else {
+                            # Fallback to direct call with all params
+                            $SSHMgr.SCPSend($accountObj, $localStr, $remoteStr, $true) | Out-Null
+                        }
+                    }
+                    catch {
+                        Write-Host "SCP Send failed: $($_.Exception.Message)" -ForegroundColor Red
+                        if ($_.Exception.InnerException) {
+                            Write-Host "Inner error: $($_.Exception.InnerException.Message)" -ForegroundColor Yellow
+                        }
+                    }
                 }
             }
         }
@@ -267,7 +306,29 @@ function Handle-Action {
             if ($remotePath) {
                 $localPath = Prompt-Path -Message "Local destination path:" -Default "./"
                 if ($localPath) {
-                    $SSHMgr.SCPReceive($Account, $remotePath, $localPath)
+                    try {
+                        # Use reflection to bypass optional-parameter resolution when classes are loaded via Invoke-Expression
+                        $scpReceiveMethod = $SSHMgr.GetType().GetMethod("SCPReceive")
+                        
+                        # Unwrap PSObject inputs and ensure strings for paths
+                        $accountObj = if ($Account -is [psobject] -and $Account.PSObject.BaseObject) { $Account.PSObject.BaseObject } else { $Account }
+                        $remoteStr  = [string]$remotePath
+                        $localStr   = [string]$localPath
+                        
+                        if ($scpReceiveMethod) {
+                            # Explicitly pass all parameters: account, remotePath, localPath, useKey
+                            $scpReceiveMethod.Invoke($SSHMgr, @($accountObj, $remoteStr, $localStr, $true)) | Out-Null
+                        } else {
+                            # Fallback to direct call with all params
+                            $SSHMgr.SCPReceive($accountObj, $remoteStr, $localStr, $true) | Out-Null
+                        }
+                    }
+                    catch {
+                        Write-Host "SCP Receive failed: $($_.Exception.Message)" -ForegroundColor Red
+                        if ($_.Exception.InnerException) {
+                            Write-Host "Inner error: $($_.Exception.InnerException.Message)" -ForegroundColor Yellow
+                        }
+                    }
                 }
             }
         }
@@ -277,7 +338,24 @@ function Handle-Action {
             }
         }
         "Delete" {
-            $AccountMgr.Delete($Account)
+            try {
+                # Unwrap PSObject to actual account instance
+                $accountObj = if ($Account -is [psobject] -and $Account.PSObject.BaseObject) { $Account.PSObject.BaseObject } else { $Account }
+                
+                # Use reflection and explicitly pass both parameters to avoid optional param resolution issues
+                $deleteMethod = $AccountMgr.GetType().GetMethod("Delete")
+                if ($deleteMethod) {
+                    $deleteMethod.Invoke($AccountMgr, @($accountObj, $true)) | Out-Null
+                } else {
+                    $AccountMgr.Delete($accountObj, $true) | Out-Null
+                }
+            }
+            catch {
+                Write-Host "Delete failed: $($_.Exception.Message)" -ForegroundColor Red
+                if ($_.Exception.InnerException) {
+                    Write-Host "Inner error: $($_.Exception.InnerException.Message)" -ForegroundColor Yellow
+                }
+            }
         }
         "Back" {
             return $false

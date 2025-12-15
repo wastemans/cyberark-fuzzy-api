@@ -1,0 +1,51 @@
+# CyberArk Fuzzy API Configuration
+# Copy this file to config.ini in the project root and edit as needed
+#
+# Note: Relative paths in this file are resolved from the project root
+# (the directory containing main.py), NOT from the current working directory.
+
+[cyberark]
+# CyberArk endpoint hostname (without https://)
+# Can also be set via -Endpoint parameter
+endpoint = cyberark
+
+# Your CyberArk username
+# Use $username format for privileged accounts
+username = MY_ADMIN_USERNAME
+
+# Verify SSL certificates (set to false for self-signed certs)
+verify_ssl = false
+
+[ssh]
+# Path to store the MFA caching SSH key
+# Relative paths are resolved from the project root (where main.py lives)
+# Defaults to <project_root>/key.openssh if not specified
+ssh_key_path = key.openssh
+
+# Maximum age of SSH key before refresh (hours)
+# CyberArk MFA caching default is 9 hours
+key_max_age_hours = 9
+
+[keepalive]
+# Token keepalive settings
+# CyberArk session timeout is 20 minutes by default
+# (Configured in C:\inetpub\wwwroot\PasswordVault\web.config, sessionState timeout)
+
+# Minimum keepalive interval in seconds (default: 901 = 15:01)
+min_seconds = 901
+
+# Maximum keepalive interval in seconds (default: 1139 = 18:59)
+max_seconds = 1139
+
+# Hard timeout for the keepalive scheduled task in hours (default: 9)
+# The keepalive runs as a Windows Scheduled Task that survives the main app exiting.
+# It will auto-terminate after this many hours, matching the SSH key validity.
+timeout_hours = 9
+
+[ui]
+# Show rich formatted output
+rich_output = true
+
+# Default search term (optional, leave empty for interactive prompt)
+default_search = 
+
