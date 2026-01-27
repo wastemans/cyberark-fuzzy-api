@@ -137,7 +137,7 @@ class CyberArkAPI {
                 }
             }
             
-            throw [APIError]::new($statusCode, $errorMessage)
+            throw [APIError]::new($statusCode, $errorMessage, $null)
         }
     }
     
@@ -178,7 +178,7 @@ class CyberArkAPI {
         catch {
             $statusCode = $_.Exception.Response.StatusCode.value__
             $errorMessage = $_.Exception.Message
-            throw [APIError]::new($statusCode, $errorMessage)
+            throw [APIError]::new($statusCode, $errorMessage, $null)
         }
     }
     
@@ -273,7 +273,7 @@ class CyberArkAPI {
         catch {
             $statusCode = $_.Exception.Response.StatusCode.value__
             $errorMessage = $_.Exception.Message
-            throw [APIError]::new($statusCode, $errorMessage)
+            throw [APIError]::new($statusCode, $errorMessage, $null)
         }
     }
 }
